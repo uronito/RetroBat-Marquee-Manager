@@ -198,7 +198,7 @@ if lib:
 
     lib.ZeDMD_Close.argtypes = [ZeDMD_ptr]
 
-    lib.ZeDMD_RenderRgb24.argtypes = [ZeDMD_ptr, ctypes.POINTER(ctypes.c_uint8)]
+    lib.ZeDMD_RenderRgb24EncodedAs565.argtypes = [ZeDMD_ptr, ctypes.POINTER(ctypes.c_uint8)]
 
     lib.ZeDMD_ClearScreen.argtypes = [ZeDMD_ptr]
 
@@ -228,8 +228,8 @@ if lib:
         def open(self):
             return lib.ZeDMD_Open(self.obj)
 
-        def render_rgb24(self, frame):
-            lib.ZeDMD_RenderRgb24(self.obj, frame)
+        def RenderRgb24EncodedAs565(self, frame):
+            lib.ZeDMD_RenderRgb24EncodedAs565(self.obj, frame)
 
         def clear_screen(self):
             lib.ZeDMD_ClearScreen(self.obj)
@@ -473,7 +473,7 @@ class DMDServer:
         if len(self.gif_frames) == 1:
             print("GIF has only one frame, rendering once.")
             rgb_frame = image_to_rgb_array(self.gif_frames[0], width, height)
-            self.zedmd.render_rgb24(rgb_frame)
+            self.zedmd.RenderRgb24EncodedAs565(rgb_frame)
         else:
             threading.Thread(target=self.play_gif, args=(width, height), daemon=True).start()
 
@@ -485,7 +485,7 @@ class DMDServer:
                         break
                     start_time = time.time()
                     rgb_frame = image_to_rgb_array(frame, width, height)
-                    self.zedmd.render_rgb24(rgb_frame)
+                    self.zedmd.RenderRgb24EncodedAs565(rgb_frame)
                     end_time = time.time()
                     #print(f"GIF Time to convert and render frame: {end_time - start_time:.6f} seconds")
                     time.sleep(duration)
